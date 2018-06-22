@@ -112,10 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f9d686cc6aa27438e884a3b1981692, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 70
+  damage: 30
   explosionEffectPrefab: {fileID: 1718735937677384, guid: 9fdd3a6ca945f2448a3b73b916c494cf,
     type: 2}
-  speed: 30
+  speed: 40
 --- !u!135 &135365467377005430
 SphereCollider:
   m_ObjectHideFlags: 1

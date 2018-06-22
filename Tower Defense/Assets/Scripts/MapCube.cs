@@ -31,9 +31,7 @@ public class MapCube : MonoBehaviour {
     }
 
     private void OnMouseEnter () {
-        Debug.Log("11");
         if (turretGo != null || EventSystem.current.IsPointerOverGameObject ()) return; //有炮塔或者点击为ui直接return
-        Debug.Log("----");
         cubeRenderer.material.color = Color.red;
     }
 
