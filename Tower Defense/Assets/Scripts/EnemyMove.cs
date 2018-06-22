@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyMove : MonoBehaviour {
     public float speed = 1;
     private Transform[] positons;
+    public GameObject explosionEffect;
+    public int HP = 100;
     private int index = 0;
     // Use this for initialization
     void Start () {
@@ -38,7 +40,17 @@ public class EnemyMove : MonoBehaviour {
     }
 
     public void TakeDamage (int damage) {
+        HP -= damage;
+        if (HP <= 0) {
+            EnemyExplosion ();
+        }
+    }
 
+    void EnemyExplosion () {
+        GameObject effect = GameObject.Instantiate (explosionEffect, transform.position, transform.rotation);
+        Destroy (effect, 1);
+        Destroy (this.gameObject);
+        // TODO 加金钱
     }
 
 }

@@ -6,7 +6,7 @@ public class BulletController : MonoBehaviour {
 
 	// Use this for initialization
 	private Transform targetEnemy;
-	public int damage = 50;
+	public int damage = 30;
 	public GameObject explosionEffectPrefab;
 	public float speed = 70;
 	void Start () {

@@ -39,13 +39,13 @@ public class Turret : MonoBehaviour {
 	void RmoveEmenyNull () {
 		if (enemys.Count <= 0) return;
 		if (enemys[0] != null) return;	// 第一个为空时才移除
-		List<int> index = new List<int> ();
+		List<GameObject> index = new List<GameObject> ();
 		for (int i = 0; i < enemys.Count; i++) {
 			if (enemys[i] == null)
-				index.Add (i);
+				index.Add (enemys[i]);
 		}
-		foreach (int i in index) {
-			enemys.RemoveAt (i);
+		foreach (GameObject obj in index) {
+			enemys.Remove (obj);
 		}
 	}
 
