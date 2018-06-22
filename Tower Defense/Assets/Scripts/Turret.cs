@@ -19,21 +19,28 @@ public class Turret : MonoBehaviour {
 		}
 	}
 
-	public GameObject bulletPrefab;
-	public float attchTime = 1;
+	public GameObject bulletPrefab;	//子弹对象
+	public GameObject turretHead;	//武器头部对象
+	public float attchTime = 1;	//攻击间隔
 	private float runTime = 0;
-	public Transform bulletPosition;
+	public Transform bulletPosition;	// 子弹位置
 
 	private void Start () {
 		runTime = attchTime;
 	}
 	private void Update () {
 		RmoveEmenyNull ();
+		if (enemys.Count <= 0) return;
 		runTime += Time.deltaTime;
-		if (enemys.Count > 0 && runTime >= attchTime) {
+		LookAtEnemy();
+		if (runTime >= attchTime) {
 			runTime = 0;
 			Attach (); //攻击
 		}
+	}
+
+	void LookAtEnemy(){
+		turretHead.transform.LookAt(enemys[0].transform);
 	}
 
 	void RmoveEmenyNull () {
