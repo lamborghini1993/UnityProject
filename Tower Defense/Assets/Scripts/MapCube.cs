@@ -8,11 +8,14 @@ public class MapCube : MonoBehaviour {
 
     [HideInInspector] // 不需要显示在面板
     public GameObject turretGo; //炮塔
+    [HideInInspector]
+    public bool isUpgrade = false;
     public GameObject BuildEffect; //建造时的特效
     private Color oldColor;
     private Renderer cubeRenderer;
 
     public void BuildTurret (GameObject turretPerfab) {
+        isUpgrade = false;
         turretGo = GameObject.Instantiate (turretPerfab, transform.position, Quaternion.identity);
         GameObject effect = GameObject.Instantiate (BuildEffect, transform.position, Quaternion.identity);
         cubeRenderer.material.color = oldColor;

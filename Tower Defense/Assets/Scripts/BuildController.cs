@@ -8,11 +8,12 @@ public class BuildController : MonoBehaviour {
 
     public TurretData lasser, missile, standard;
     private TurretData selectTurret = null;
+    private GameObject selectTurretGo; // 保存上次选择的炮塔
     private int money = 1000;
     public Text moneyText = null;
     public Animator moneyAnimator;
     public GameObject canvasTurretUpgrade;
-    public GameObject canvasUpgradeButton;
+    public Button canvasUpgradeButton;
 
     // Use this for initialization
     void Start () { }
@@ -48,7 +49,13 @@ public class BuildController : MonoBehaviour {
                     CreateTurret (mapCube);
                 } else {
                     // TODO 升级
-                    ShowTurretUpgradeCanvas (mapCube.turretGo.transform.position);
+                    if (selectTurretGo == mapCube.turretGo) {
+                        HideTurretUpgradeCanvas ();
+                        selectTurretGo = null;
+                    } else {
+                        ShowTurretUpgradeCanvas (mapCube.turretGo.transform.position, mapCube.isUpgrade);
+                        selectTurretGo = mapCube.turretGo;
+                    }
                 }
             }
         }
@@ -87,9 +94,10 @@ public class BuildController : MonoBehaviour {
             selectTurret = standard;
     }
 
-    void ShowTurretUpgradeCanvas (Vector3 position) {
+    void ShowTurretUpgradeCanvas (Vector3 position, bool isUpgrade) {
         canvasTurretUpgrade.SetActive (true);
         canvasTurretUpgrade.transform.position = position;
+        canvasUpgradeButton.interactable = !isUpgrade;
     }
 
     void HideTurretUpgradeCanvas () {

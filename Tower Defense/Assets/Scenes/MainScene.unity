@@ -672,7 +672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33962262, g: 0.2739409, b: 0.2739409, a: 1}
+  m_Color: {r: 0.11774653, g: 0.12070067, b: 0.9245283, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4955,7 +4955,7 @@ MonoBehaviour:
   moneyText: {fileID: 1191556182}
   moneyAnimator: {fileID: 1191556184}
   canvasTurretUpgrade: {fileID: 1265726414}
-  canvasUpgradeButton: {fileID: 1070364363}
+  canvasUpgradeButton: {fileID: 1070364365}
 --- !u!1001 &687605149
 Prefab:
   m_ObjectHideFlags: 0
@@ -10931,7 +10931,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.33962262, g: 0.2739409, b: 0.2739409, a: 1}
+  m_Color: {r: 0.11774653, g: 0.12070067, b: 0.9245283, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
