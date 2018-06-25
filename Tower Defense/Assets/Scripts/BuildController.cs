@@ -11,6 +11,8 @@ public class BuildController : MonoBehaviour {
     private int money = 1000;
     public Text moneyText = null;
     public Animator moneyAnimator;
+    public GameObject canvasTurretUpgrade;
+    public GameObject canvasUpgradeButton;
 
     // Use this for initialization
     void Start () { }
@@ -46,6 +48,7 @@ public class BuildController : MonoBehaviour {
                     CreateTurret (mapCube);
                 } else {
                     // TODO 升级
+                    ShowTurretUpgradeCanvas (mapCube.turretGo.transform.position);
                 }
             }
         }
@@ -82,5 +85,22 @@ public class BuildController : MonoBehaviour {
     public void OnStandardTurret (bool isOn) {
         if (isOn)
             selectTurret = standard;
+    }
+
+    void ShowTurretUpgradeCanvas (Vector3 position) {
+        canvasTurretUpgrade.SetActive (true);
+        canvasTurretUpgrade.transform.position = position;
+    }
+
+    void HideTurretUpgradeCanvas () {
+        canvasTurretUpgrade.SetActive (false);
+    }
+
+    public void OnCanvasUpgradeButtonDown () {
+
+    }
+
+    public void OnCanvasDestroyButtonDown () {
+
     }
 }
