@@ -84,8 +84,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4987098825925250}
   - component: {fileID: 135231347510274838}
-  - component: {fileID: 114817954929164874}
   - component: {fileID: 54131592502335062}
+  - component: {fileID: 114817954929164874}
   m_Layer: 10
   m_Name: Laser Beamer
   m_TagString: Untagged
@@ -275,7 +275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5092956e928436f419e51b4c2318ed8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemys: []
   bulletPrefab: {fileID: 1706292316194296, guid: da82b7d4f4640c5499284257dedcd9ab,
     type: 2}
   turretHead: {fileID: 1246967284028356}
@@ -291,5 +290,5 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 18
+  m_Radius: 15
   m_Center: {x: 0, y: 0.5, z: 0}

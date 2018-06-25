@@ -6,7 +6,7 @@ using UnityEngine;
 public class Turret : MonoBehaviour {
 
 	// Use this for initialization
-	public List<GameObject> enemys = new List<GameObject> ();
+	private List<GameObject> enemys = new List<GameObject> ();
 	private void OnTriggerEnter (Collider other) {
 		if (other.tag == "Enemy") {
 			enemys.Add (other.gameObject);
