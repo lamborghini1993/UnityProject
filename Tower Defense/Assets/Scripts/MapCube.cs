@@ -42,4 +42,11 @@ public class MapCube : MonoBehaviour {
         cubeRenderer.material.color = oldColor;
     }
 
+    public void TurretUpgrade () {
+        isUpgrade = true;
+    }
+
+    public void TurretDestory () {
+
+    }
 }

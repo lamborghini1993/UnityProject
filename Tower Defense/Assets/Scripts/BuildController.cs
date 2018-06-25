@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class BuildController : MonoBehaviour {
 
     public TurretData lasser, missile, standard;
-    private TurretData selectTurret = null;
-    private GameObject selectTurretGo; // 保存上次选择的炮塔
+    private TurretData selectTurret = null; // ui上选择的炮塔类型
+    private MapCube selectMapcube; // 保存上次选择的炮塔
     private int money = 1000;
     public Text moneyText = null;
     public Animator moneyAnimator;
@@ -49,13 +49,12 @@ public class BuildController : MonoBehaviour {
                     CreateTurret (mapCube);
                 } else {
                     // TODO 升级
-                    if (selectTurretGo == mapCube.turretGo) {
+                    if (selectMapcube == mapCube && canvasTurretUpgrade.activeInHierarchy) {
                         HideTurretUpgradeCanvas ();
-                        selectTurretGo = null;
                     } else {
                         ShowTurretUpgradeCanvas (mapCube.turretGo.transform.position, mapCube.isUpgrade);
-                        selectTurretGo = mapCube.turretGo;
                     }
+                    selectMapcube = mapCube;
                 }
             }
         }
@@ -105,10 +104,12 @@ public class BuildController : MonoBehaviour {
     }
 
     public void OnCanvasUpgradeButtonDown () {
-
+        selectMapcube.TurretUpgrade ();
+        HideTurretUpgradeCanvas ();
     }
 
     public void OnCanvasDestroyButtonDown () {
-
+        selectMapcube.TurretDestory ();
+        HideTurretUpgradeCanvas ();
     }
 }
