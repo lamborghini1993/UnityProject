@@ -12,14 +12,29 @@ public class MapCube : MonoBehaviour {
     public bool isUpgrade = false;
     public GameObject BuildEffect; //建造时的特效
     private Color oldColor;
-    private Renderer cubeRenderer;
+    private Renderer cubeRenderer; // cube的render，修改颜色用途
+    private TurretData turretData; //保存建造的turretData（获取未升级、升级）
 
-    public void BuildTurret (GameObject turretPerfab) {
+    public void BuildTurret (TurretData turretData) {
+        this.turretData = turretData;
         isUpgrade = false;
-        turretGo = GameObject.Instantiate (turretPerfab, transform.position, Quaternion.identity);
+        turretGo = GameObject.Instantiate (turretData.turretPerfab, transform.position, Quaternion.identity);
         GameObject effect = GameObject.Instantiate (BuildEffect, transform.position, Quaternion.identity);
         cubeRenderer.material.color = oldColor;
         Destroy (effect, 1);
+    }
+
+    public void TurretUpgrade () {
+        if (isUpgrade) return;
+        isUpgrade = true;
+        Destroy (turretGo);
+        turretGo = GameObject.Instantiate (turretData.turrentUpgradePerfab, transform.position, Quaternion.identity);
+    }
+
+    public void TurretDestory () {
+        isUpgrade = false;
+        Destroy (turretGo);
+        turretData = null;
     }
 
     // Use this for initialization
@@ -42,11 +57,4 @@ public class MapCube : MonoBehaviour {
         cubeRenderer.material.color = oldColor;
     }
 
-    public void TurretUpgrade () {
-        isUpgrade = true;
-    }
-
-    public void TurretDestory () {
-
-    }
 }

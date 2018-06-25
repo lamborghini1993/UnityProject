@@ -69,7 +69,7 @@ public class BuildController : MonoBehaviour {
             return;
         }
         ChangeMoney (-selectTurret.cost);
-        mapCube.BuildTurret (selectTurret.turretPerfab);
+        mapCube.BuildTurret (selectTurret);
     }
 
     // Update is called once per frame
@@ -94,13 +94,15 @@ public class BuildController : MonoBehaviour {
     }
 
     void ShowTurretUpgradeCanvas (Vector3 position, bool isUpgrade) {
+        // Debug.Log (isUpgrade);   // TODO bug 升级之后的还是会闪烁点击升级
+        canvasUpgradeButton.interactable = !isUpgrade;
         canvasTurretUpgrade.SetActive (true);
         canvasTurretUpgrade.transform.position = position;
-        canvasUpgradeButton.interactable = !isUpgrade;
     }
 
     void HideTurretUpgradeCanvas () {
         canvasTurretUpgrade.SetActive (false);
+        canvasUpgradeButton.interactable = true;
     }
 
     public void OnCanvasUpgradeButtonDown () {
