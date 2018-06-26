@@ -274,10 +274,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5092956e928436f419e51b4c2318ed8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 1706292316194296, guid: da82b7d4f4640c5499284257dedcd9ab,
+  bulletPrefab: {fileID: 1399900927954000, guid: 403828e43879d4c44b9b546e2a08dee0,
     type: 2}
   turretHead: {fileID: 1003623102457342}
-  attchTime: 1
+  attchTime: 1.3
   bulletPosition: {fileID: 4830231900804740}
 --- !u!135 &135437784912170798
 SphereCollider:
