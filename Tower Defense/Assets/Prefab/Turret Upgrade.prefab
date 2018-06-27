@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 4456024654212306}
   - component: {fileID: 135757903174688132}
   - component: {fileID: 54254656935411454}
-  - component: {fileID: 114353766154605534}
+  - component: {fileID: 114415916590839492}
   m_Layer: 10
   m_Name: Turret Upgrade
   m_TagString: Untagged
@@ -264,7 +264,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &114353766154605534
+--- !u!114 &114415916590839492
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -272,14 +272,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1652875552705674}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5092956e928436f419e51b4c2318ed8c, type: 3}
+  m_Script: {fileID: 11500000, guid: bda8f772ba2235346a002809197a7fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turretHead: {fileID: 1603932315441706}
+  bulletPosition: {fileID: 4692010490899558}
   bulletPrefab: {fileID: 1706292316194296, guid: da82b7d4f4640c5499284257dedcd9ab,
     type: 2}
-  turretHead: {fileID: 1603932315441706}
-  attchTime: 0.5
-  bulletPosition: {fileID: 4692010490899558}
+  attchTime: 0.7
 --- !u!135 &135757903174688132
 SphereCollider:
   m_ObjectHideFlags: 1

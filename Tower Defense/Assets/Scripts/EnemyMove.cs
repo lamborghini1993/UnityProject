@@ -7,8 +7,8 @@ public class EnemyMove : MonoBehaviour {
     public float speed = 1;
     private Transform[] positons;
     public GameObject explosionEffect;
-    public int HP = 100;
-    private int totalHP;
+    public float HP = 100;
+    private float totalHP;
     private Slider hpSlider;
     private int index = 0;
     void Start () {
@@ -43,7 +43,7 @@ public class EnemyMove : MonoBehaviour {
         GameCrontroller.EnemyDisappear ();
     }
 
-    public void TakeDamage (int damage) {
+    public void TakeDamage (float damage) {
         HP -= damage;
         if (HP <= 0) {
             EnemyExplosion ();

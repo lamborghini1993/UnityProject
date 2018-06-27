@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 4420238643913102}
   - component: {fileID: 135437784912170798}
   - component: {fileID: 54598662729535860}
-  - component: {fileID: 114945074864541714}
+  - component: {fileID: 114132070484552084}
   m_Layer: 10
   m_Name: Missile Launcher
   m_TagString: Untagged
@@ -263,7 +263,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &114945074864541714
+--- !u!114 &114132070484552084
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -271,14 +271,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1302701488583924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5092956e928436f419e51b4c2318ed8c, type: 3}
+  m_Script: {fileID: 11500000, guid: bda8f772ba2235346a002809197a7fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turretHead: {fileID: 1003623102457342}
+  bulletPosition: {fileID: 4830231900804740}
   bulletPrefab: {fileID: 1399900927954000, guid: 403828e43879d4c44b9b546e2a08dee0,
     type: 2}
-  turretHead: {fileID: 1003623102457342}
-  attchTime: 1.3
-  bulletPosition: {fileID: 4830231900804740}
+  attchTime: 1.5
 --- !u!135 &135437784912170798
 SphereCollider:
   m_ObjectHideFlags: 1

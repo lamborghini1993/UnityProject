@@ -6,7 +6,7 @@ public class BulletController : MonoBehaviour {
 
 	// Use this for initialization
 	private Transform targetEnemy;
-	public int damage = 30;
+	public float damage = 30;
 	public GameObject explosionEffectPrefab;
 	public float speed = 70;
 	void Start () {
@@ -35,4 +35,5 @@ public class BulletController : MonoBehaviour {
 		Destroy (attchEffect, 1);
 		Destroy (this.gameObject); //摧毁子弹游戏物体
 	}
+
 }

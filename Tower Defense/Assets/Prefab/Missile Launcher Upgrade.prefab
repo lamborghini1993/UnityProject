@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4178118458881338}
   - component: {fileID: 135413156165785782}
   - component: {fileID: 54320079371231570}
-  - component: {fileID: 114211141158767286}
+  - component: {fileID: 114365179697916814}
   m_Layer: 10
   m_Name: Missile Launcher Upgrade
   m_TagString: Untagged
@@ -263,7 +263,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &114211141158767286
+--- !u!114 &114365179697916814
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -271,14 +271,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1174424480432560}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5092956e928436f419e51b4c2318ed8c, type: 3}
+  m_Script: {fileID: 11500000, guid: bda8f772ba2235346a002809197a7fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turretHead: {fileID: 1720878625521218}
+  bulletPosition: {fileID: 4565893841153680}
   bulletPrefab: {fileID: 1399900927954000, guid: 403828e43879d4c44b9b546e2a08dee0,
     type: 2}
-  turretHead: {fileID: 1720878625521218}
-  attchTime: 1
-  bulletPosition: {fileID: 4565893841153680}
+  attchTime: 1.2
 --- !u!135 &135413156165785782
 SphereCollider:
   m_ObjectHideFlags: 1

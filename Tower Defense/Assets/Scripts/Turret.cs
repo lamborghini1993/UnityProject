@@ -6,7 +6,12 @@ using UnityEngine;
 public class Turret : MonoBehaviour {
 
 	// Use this for initialization
-	private List<GameObject> enemys = new List<GameObject> ();
+	protected List<GameObject> enemys = new List<GameObject> ();
+
+	public GameObject turretHead; //武器头部对象
+	
+	public Transform bulletPosition; // 子弹位置
+
 	private void OnTriggerEnter (Collider other) {
 		if (other.tag == "Enemy") {
 			enemys.Add (other.gameObject);
@@ -19,34 +24,14 @@ public class Turret : MonoBehaviour {
 		}
 	}
 
-	public GameObject bulletPrefab; //子弹对象
-	public GameObject turretHead; //武器头部对象
-	public float attchTime = 1; //攻击间隔
-	private float runTime = 0;
-	public Transform bulletPosition; // 子弹位置
-
-	private void Start () {
-		runTime = attchTime;
-	}
-	private void Update () {
-		RmoveEmenyNull ();
-		if (enemys.Count <= 0) return;
-		runTime += Time.deltaTime;
-		LookAtEnemy ();
-		if (runTime >= attchTime) {
-			runTime = 0;
-			Attach (); //攻击
-		}
-	}
-
-	void LookAtEnemy () {
+	protected void LookAtEnemy () {
 		Vector3 enemysV = enemys[0].transform.position;
 		enemysV.y = transform.position.y;
 		turretHead.transform.LookAt (enemysV);
 		// turretHead.transform.LookAt (enemys[0].transform);	// y轴也进行lookat
 	}
 
-	void RmoveEmenyNull () {
+	protected void RmoveEmenyNull () {
 		if (enemys.Count <= 0) return;
 		if (enemys[0] != null) return; // 第一个为空时才移除
 		List<GameObject> index = new List<GameObject> ();
@@ -59,8 +44,4 @@ public class Turret : MonoBehaviour {
 		}
 	}
 
-	private void Attach () {
-		GameObject bullet = GameObject.Instantiate (bulletPrefab, bulletPosition.position, bulletPosition.rotation);
-		bullet.GetComponent<BulletController> ().SetTarget (enemys[0].transform);
-	}
 }
