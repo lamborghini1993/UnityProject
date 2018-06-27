@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameCrontroller : MonoBehaviour {
@@ -9,7 +10,7 @@ public class GameCrontroller : MonoBehaviour {
 	public Transform MONSTER_START;
 	public float waveTime = 10;
 	private int enemyCount = 0;
-	public Text endTip;
+	public GameObject gameover;
 
 	public static GameCrontroller Instance;
 
@@ -17,9 +18,8 @@ public class GameCrontroller : MonoBehaviour {
 		Instance = this;
 	}
 
-	// Use this for initialization
 	void Start () {
-		endTip.enabled = false;
+		gameover.SetActive (false);
 		StartCoroutine (EnemyGenerate ());
 	}
 
@@ -40,18 +40,25 @@ public class GameCrontroller : MonoBehaviour {
 				yield return 0;
 			yield return new WaitForSeconds (waveTime);
 		}
+		while (enemyCount > 0)
+			yield return 0;
 		GameWin ();
 	}
 
 	public void GameOver () {
-		endTip.enabled = true;
-		endTip.text = "You Fail~";
+		gameover.SetActive (true);
+		gameover.GetComponentInChildren<Text> ().text = "你输了";
 		StopAllCoroutines ();
 	}
 
 	public void GameWin () {
-		endTip.enabled = true;
-		endTip.text = "You Win~";
+		gameover.GetComponentInChildren<Text> ().text = "你赢了";
+		gameover.SetActive (true);
 		StopAllCoroutines ();
+	}
+
+	public void Replay () {
+		gameover.SetActive (false);
+		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
 	}
 }
