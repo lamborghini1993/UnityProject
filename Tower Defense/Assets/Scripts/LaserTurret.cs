@@ -21,6 +21,6 @@ public class LaserTurret : Turret {
 		laserLineRenderer.enabled = true;
 		laserLineRenderer.SetPositions (new Vector3[] { bulletPosition.position, enemys[0].transform.position });
 		// bullet.GetComponent<BulletController> ().LaserDamage ();
-		enemys[0].transform.GetComponent<EnemyMove> ().TakeDamage (120 * Time.deltaTime);
+		enemys[0].transform.GetComponent<EnemyMove> ().TakeDamage (damage * Time.deltaTime);
 	}
 }
