@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 发射激光的炮塔
 public class LaserTurret : Turret {
 
 	public LineRenderer laserLineRenderer;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 发射子弹的炮塔
 public class BulletTurret : Turret {
 
 	public GameObject bulletPrefab; //子弹对象
