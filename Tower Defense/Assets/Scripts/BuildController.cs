@@ -48,13 +48,7 @@ public class BuildController : MonoBehaviour {
                 if (mapCube.turretGo == null) {
                     CreateTurret (mapCube);
                 } else {
-                    // TODO 升级
-                    if (selectMapcube == mapCube && canvasTurretUpgrade.activeInHierarchy) {
-                        HideTurretUpgradeCanvas ();
-                    } else {
-                        ShowTurretUpgradeCanvas (mapCube.turretGo.transform.position, mapCube.isUpgrade);
-                    }
-                    selectMapcube = mapCube;
+                    UpgradeTurretUI (mapCube);
                 }
             }
         }
@@ -70,6 +64,15 @@ public class BuildController : MonoBehaviour {
         }
         ChangeMoney (-selectTurret.cost);
         mapCube.BuildTurret (selectTurret);
+    }
+
+    void UpgradeTurretUI (MapCube mapCube) {
+        if (selectMapcube == mapCube && canvasTurretUpgrade.activeInHierarchy) {
+            HideTurretUpgradeCanvas ();
+        } else {
+            ShowTurretUpgradeCanvas (mapCube.turretGo.transform.position, mapCube.isUpgrade);
+        }
+        selectMapcube = mapCube;
     }
 
     // Update is called once per frame
@@ -106,6 +109,12 @@ public class BuildController : MonoBehaviour {
     }
 
     public void OnCanvasUpgradeButtonDown () {
+        if (selectMapcube == null) return;
+        if (money < selectTurret.costUpgrade) {
+            moneyAnimator.SetTrigger ("Flicker");
+            return;
+        }
+        ChangeMoney (-selectTurret.costUpgrade);
         selectMapcube.TurretUpgrade ();
         HideTurretUpgradeCanvas ();
     }
