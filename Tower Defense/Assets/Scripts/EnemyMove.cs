@@ -31,16 +31,17 @@ public class EnemyMove : MonoBehaviour {
             index++;
         }
         if (index >= positons.Length) {
-            MyDestory ();
+            ReachDestination ();
         }
     }
 
-    void MyDestory () {
+    void ReachDestination () {
+        GameCrontroller.Instance.GameOver ();
         Destroy (this.gameObject);
     }
 
     private void OnDestroy () {
-        GameCrontroller.EnemyDisappear ();
+        GameCrontroller.Instance.EnemyDisappear ();
     }
 
     public void TakeDamage (float damage) {
