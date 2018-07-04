@@ -3,45 +3,61 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : MonoBehaviour {
+public class Turret : MonoBehaviour
+{
 
-	// Use this for initialization
-	protected List<GameObject> enemys = new List<GameObject> ();
+    // Use this for initialization
+    protected List<GameObject> enemys = new List<GameObject>();
 
-	public GameObject turretHead; //武器头部对象
-	
-	public Transform bulletPosition; // 子弹位置
+    public GameObject turretHead; //武器头部对象
 
-	private void OnTriggerEnter (Collider other) {
-		if (other.tag == "Enemy") {
-			enemys.Add (other.gameObject);
-		}
-	}
+    public Transform bulletPosition; // 子弹位置
 
-	private void OnTriggerExit (Collider other) {
-		if (other.tag == "Enemy") {
-			enemys.Remove (other.gameObject);
-		}
-	}
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            enemys.Add(other.gameObject);
+        }
+    }
 
-	protected void LookAtEnemy () {
-		Vector3 enemysV = enemys[0].transform.position;
-		enemysV.y = transform.position.y;
-		turretHead.transform.LookAt (enemysV);
-		// turretHead.transform.LookAt (enemys[0].transform);	// y轴也进行lookat
-	}
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            enemys.Remove(other.gameObject);
+        }
+    }
 
-	protected void RmoveEmenyNull () {
-		if (enemys.Count <= 0) return;
-		if (enemys[0] != null) return; // 第一个为空时才移除
-		List<GameObject> index = new List<GameObject> ();
-		for (int i = 0; i < enemys.Count; i++) {
-			if (enemys[i] == null)
-				index.Add (enemys[i]);
-		}
-		foreach (GameObject obj in index) {
-			enemys.Remove (obj);
-		}
-	}
+    protected void LookAtEnemy()
+    {
+        // 增加炮塔旋转的过程
+        Vector3 dir = enemys[0].transform.position - transform.position;
+        dir.y = 0;
+        Quaternion tager = Quaternion.LookRotation(dir);
+        turretHead.transform.rotation = Quaternion.Slerp(turretHead.transform.rotation, tager, 5 * Time.deltaTime);
+
+        //Vector3 enemysV = enemys[0].transform.position;
+        //enemysV.y = transform.position.y;
+        //turretHead.transform.LookAt(enemysV);
+
+        //turretHead.transform.LookAt(enemys[0].transform);	// y轴也进行lookat
+    }
+
+    protected void RmoveEmenyNull()
+    {
+        if (enemys.Count <= 0) return;
+        if (enemys[0] != null) return; // 第一个为空时才移除
+        List<GameObject> index = new List<GameObject>();
+        for (int i = 0; i < enemys.Count; i++)
+        {
+            if (enemys[i] == null)
+                index.Add(enemys[i]);
+        }
+        foreach (GameObject obj in index)
+        {
+            enemys.Remove(obj);
+        }
+    }
 
 }
