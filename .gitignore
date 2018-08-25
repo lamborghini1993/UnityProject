@@ -1,0 +1,10 @@
+﻿Library/
+Packages/
+obj/
+Temp/
+*.csproj
+*.sln
+.vscode/
+.vs/
+*.meta
+Build/
