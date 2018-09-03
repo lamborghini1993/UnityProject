@@ -40,7 +40,7 @@ public class FoodController:NetworkBehaviour
         int index = Random.Range(0, foodColor.Length);
         GetComponent<SpriteRenderer>().color = foodColor[index];
         Vector3 foodSize = GetComponent<CircleCollider2D>().bounds.size;
-        Radius = foodSize.x;
+        Radius = foodSize.x / 2.0f;
         Area = Mathf.PI * Radius * Radius;
     }
 }

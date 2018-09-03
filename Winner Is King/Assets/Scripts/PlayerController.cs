@@ -7,6 +7,7 @@ public class PlayerController:NetworkBehaviour
 {
 
     public float speed = 10;
+    float radius, area;
     Rigidbody2D rb2d;
 
     private void Start()
@@ -32,6 +33,8 @@ public class PlayerController:NetworkBehaviour
         //Vector3 mapSize = background.GetComponent<SpriteRenderer>().sprite.bounds.size;
         Vector3 playerSize = GetComponent<CircleCollider2D>().bounds.size;
         Debug.Log(playerSize);
+        radius = playerSize.x / 2.0f;
+        area = Mathf.PI * radius * radius;
         float boundaryX, boundaryY;
         boundaryX = (GlobalVar.Instance.MapX - playerSize.x) / 2.0f;
         boundaryY = (GlobalVar.Instance.MapY - playerSize.y) / 2.0f;
@@ -41,11 +44,34 @@ public class PlayerController:NetworkBehaviour
         //transform.localPosition = new Vector3(boundaryX, -boundaryY, transform.localPosition.z);
     }
 
+    void _Becomebigger(float r)
+    {
+        float newArea = Mathf.PI * r * r;
+        float multiple = newArea / area;
+        Debug.Log(string.Format("area:{0} newarea:{1} multiple:{2} localscale:{3}", area, newArea, multiple, transform.localScale));
+        transform.localScale += new Vector3(multiple, multiple, multiple);
+        area += newArea;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.transform.CompareTag("Food"))
+        {
+            Debug.Log("碰撞");
+            float r = collision.gameObject.GetComponent<FoodController>().Radius;
+            _Becomebigger(r);
+            Destroy(collision.gameObject);
+            GenerateFoodManager.Instance.EatFood();
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Food"))
         {
-            Debug.Log("---Eat Food---");
+            Debug.Log("触发");
+            float r = collision.gameObject.GetComponent<FoodController>().Radius;
+            _Becomebigger(r);
             Destroy(collision.gameObject);
             GenerateFoodManager.Instance.EatFood();
         }
