@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenerateFoodManager:MonoBehaviour
+public class GenerateFoodManager
 {
-
     private int curFood = 0;
-    public int maxFood = 30;
-    public GameObject food;
-    public GameObject background;
-    private float boundaryWidth, boundaryHeight;
-    private float foodWidth, foodHeight;
+    private int maxFood;
     private static GenerateFoodManager m_instance;
+    public float boundaryWidth, boundaryHeight;
 
     private GenerateFoodManager() { }
     public static GenerateFoodManager Instance
@@ -25,24 +21,17 @@ public class GenerateFoodManager:MonoBehaviour
 
     }
 
-    private void Start()
+    public int MaxFood
     {
-        Vector3 mapSize = background.GetComponent<SpriteRenderer>().sprite.bounds.size;
-        GlobalVar.Instance.MapX = mapSize.x;
-        GlobalVar.Instance.MapY = mapSize.y;
+        get
+        {
+            return maxFood;
+        }
 
-        //Vector3 foodSize = food.GetComponent<CircleCollider2D>().bounds.size;
-        //boundaryWidth = (mapSize.x - foodSize.x) / 2.0f;
-        //boundaryHeight = (mapSize.y - foodSize.y) / 2.0f;
-
-        Vector3 foodSize = food.GetComponent<SpriteRenderer>().sprite.bounds.size; //求的是原来的大小，需要乘以倍数
-        foodWidth = foodSize.x * food.transform.localScale.x;
-        foodHeight = foodSize.y * food.transform.localScale.y;
-        boundaryWidth = (mapSize.x - foodWidth) / 2.0f;
-        boundaryHeight = (mapSize.y - foodHeight) / 2.0f;
-        Debug.Log(mapSize);
-        Debug.Log(foodSize);
-        //GameObject.Instantiate(food, new Vector3(boundaryWidth, boundaryHeight, 0), Quaternion.identity);
+        set
+        {
+            maxFood = value;
+        }
     }
 
     Vector3 RandomCoord()
@@ -53,9 +42,9 @@ public class GenerateFoodManager:MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void GenerateFood(GameObject food)
     {
-        if(curFood >= maxFood)
+        if(curFood >= MaxFood)
             return;
         GameObject go = GameObject.Instantiate(food, RandomCoord(), Quaternion.identity);
         go.GetComponent<FoodController>().Init();

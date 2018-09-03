@@ -150,10 +150,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 41239794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41794def4e265ff4ca9e7b5109e8e97d, type: 3}
+  m_Script: {fileID: 11500000, guid: 10db67aab0a211041904ce215ba30502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFood: 50
+  maxFood: 54
   food: {fileID: 1081290128180140, guid: e2a8a3f5cd96fe04684941db39188d6e, type: 2}
   background: {fileID: 1702928174}
 --- !u!1001 &60723269
