@@ -38,13 +38,11 @@ public class PlayerController:NetworkBehaviour
         offset = Camera.main.gameObject.transform.position - transform.position;
         rb2d = GetComponent<Rigidbody2D>();
 
-        //Vector3 mapSize = background.GetComponent<SpriteRenderer>().sprite.bounds.size;
-        Vector3 playerSize = GetComponent<CircleCollider2D>().bounds.size;
-        radius = playerSize.x / 2.0f;
+        radius = GetComponent<CircleCollider2D>().radius;
         area = Mathf.PI * radius * radius;
         float boundaryX, boundaryY;
-        boundaryX = (GlobalVar.Instance.MapX - playerSize.x) / 2.0f;
-        boundaryY = (GlobalVar.Instance.MapY - playerSize.y) / 2.0f;
+        boundaryX = GlobalVar.Instance.MapX / 2.0f - radius;
+        boundaryY = GlobalVar.Instance.MapY / 2.0f - radius;
         float x = Random.Range(-boundaryX, boundaryX);
         float y = Random.Range(-boundaryY, boundaryY);
         transform.localPosition = new Vector3(x, y, transform.localPosition.z);
@@ -58,6 +56,8 @@ public class PlayerController:NetworkBehaviour
         //Debug.Log(string.Format("area:{0} newarea:{1} multiple:{2} localscale:{3}", area, newArea, multiple, transform.localScale));
         transform.localScale += new Vector3(multiple, multiple, multiple);
         area += newArea;
+        radius = Mathf.Sqrt(area / Mathf.PI);
+        NetworkServer.Spawn(this.gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -87,8 +87,15 @@ public class PlayerController:NetworkBehaviour
             return;
         if(collision.CompareTag("Player"))
         {
-            Debug.Log("---Stay---");
-            Debug.Log(collision);
+            Debug.Log("OnTriggerStay2D");
+            GameObject otherPlayer = collision.gameObject;
+            float dis = Vector3.Distance(transform.position, otherPlayer.transform.position);
+            if(dis <= radius) // 如果和别人的距离小于等于自己的半径，吃掉别人
+            {
+                float r = otherPlayer.GetComponent<PlayerController>().radius;
+                Cmd_EatFood(otherPlayer);
+                _Becomebigger(r);
+            }
         }
     }
 
