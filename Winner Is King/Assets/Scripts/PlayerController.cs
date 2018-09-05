@@ -37,13 +37,9 @@ public class PlayerController:NetworkBehaviour
         // 本地玩家初始化
         offset = Camera.main.gameObject.transform.position - transform.position;
         rb2d = GetComponent<Rigidbody2D>();
-        Debug.Log(Camera.main.gameObject.transform.position);
-        Debug.Log(transform.position);
-        Debug.Log(offset);
 
         //Vector3 mapSize = background.GetComponent<SpriteRenderer>().sprite.bounds.size;
         Vector3 playerSize = GetComponent<CircleCollider2D>().bounds.size;
-        Debug.Log(playerSize);
         radius = playerSize.x / 2.0f;
         area = Mathf.PI * radius * radius;
         float boundaryX, boundaryY;
@@ -64,38 +60,25 @@ public class PlayerController:NetworkBehaviour
         area += newArea;
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if(collision.transform.CompareTag("Food"))
-    //    {
-    //        Debug.Log("碰撞");
-    //        float r = collision.gameObject.GetComponent<FoodController>().Radius;
-    //        _Becomebigger(r);
-    //        Destroy(collision.gameObject);
-    //        GenerateFoodManager.Instance.EatFood();
-    //    }
-    //}
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(!isLocalPlayer)
             return;
         if(collision.CompareTag("Food"))
         {
-            Debug.Log("触发");
             float r = collision.gameObject.GetComponent<FoodController>().Radius;
+            Cmd_EatFood(collision.gameObject);
             _Becomebigger(r);
-            Destroy(collision.gameObject);
-            CmdEatFood();
         }
     }
 
-    [Command]   // 函数名需要Cmd前缀
-    void CmdEatFood()
+    [Command]
+    public void Cmd_EatFood(GameObject food)
     {
-        // TODO 
-        //GenerateFoodManager.Instance.EatFood();
-        //NetworkServer.Spawn(); // 同步对象到服务端
+        if(!isServer)
+            return;
+        GameObject oServerController = GameObject.Find("ServerController");
+        oServerController.GetComponent<GenerateFoodManager>().CmdEatFood(food);
     }
 
     private void OnTriggerStay2D(Collider2D collision)

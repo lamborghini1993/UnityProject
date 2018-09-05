@@ -35,7 +35,7 @@ public class FoodController:NetworkBehaviour
         }
     }
 
-    public override void OnStartLocalPlayer()
+    public override void OnStartServer()
     {
         int index = Random.Range(0, foodColor.Length);
         GetComponent<SpriteRenderer>().color = foodColor[index];

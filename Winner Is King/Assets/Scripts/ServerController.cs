@@ -13,14 +13,14 @@ public class ServerController : NetworkBehaviour {
         
     }
 
-    [ClientRpc] // 函数名需要Rpc前缀
+    [ClientRpc] // 服务端调用客户端里执行,函数名需要Rpc前缀
     void RpcRespawn()
     {
         if(!isLocalPlayer)
             return;
     }
 
-    [Command]   // 函数名需要Cmd前缀
+    [Command]   // 客户端调用服务端执行,函数名需要Cmd前缀
     void CmdEatFood()
     {
         if(!isServer)

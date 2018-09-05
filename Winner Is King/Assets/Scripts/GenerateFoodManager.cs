@@ -16,7 +16,7 @@ public class GenerateFoodManager:NetworkBehaviour
     public override void OnStartServer()
     {
         _InitBackBoundary();
-        _InitFood();
+        _GenerateFood();
     }
 
     private void _InitBackBoundary()
@@ -38,10 +38,14 @@ public class GenerateFoodManager:NetworkBehaviour
         boundaryHeight = (mapSize.y - foodHeight) / 2.0f;
     }
 
-    private void _InitFood()
+    private void _GenerateFood()
     {
         while(curFood < maxFood)
-            _GenerateFood();
+        {
+            GameObject go = GameObject.Instantiate(food, _RandomCoord(), Quaternion.identity);
+            NetworkServer.Spawn(go);
+            curFood += 1;
+        }
     }
 
     Vector3 _RandomCoord()
@@ -51,17 +55,12 @@ public class GenerateFoodManager:NetworkBehaviour
         return new Vector3(x, y, 0);
     }
 
-    private void _GenerateFood()
+    public void CmdEatFood(GameObject eatFood)
     {
-        if(curFood >= maxFood)
+        if(!isServer)
             return;
-        GameObject go = GameObject.Instantiate(food, _RandomCoord(), Quaternion.identity);
-        NetworkServer.Spawn(go);
-        curFood += 1;
-    }
-
-    public void EatFood()
-    {
         curFood -= 1;
+        Destroy(eatFood);
+        _GenerateFood();
     }
 }
