@@ -8,6 +8,7 @@ public class FoodController:NetworkBehaviour
 
     public Color[] foodColor;
     private float radius, area;
+    private int colorIndex;
 
     public float Radius
     {
@@ -37,10 +38,28 @@ public class FoodController:NetworkBehaviour
 
     public override void OnStartServer()
     {
-        int index = Random.Range(0, foodColor.Length);
-        GetComponent<SpriteRenderer>().color = foodColor[index];
+        colorIndex = Random.Range(0, foodColor.Length);
         Vector3 foodSize = GetComponent<CircleCollider2D>().bounds.size;
         Radius = foodSize.x / 2.0f;
         Area = Mathf.PI * Radius * Radius;
+        GetComponent<SpriteRenderer>().color = foodColor[colorIndex];
     }
+
+    /// <summary>
+    /// 向服务端获取颜色下标
+    /// </summary>
+    /// <returns></returns>
+    //[Command]
+    //public int Cmd_GetColorIndex()
+    //{
+    //    return colorIndex;
+    //}
+
+    //private void Start()
+    //{
+    //    if(isServer)
+    //        GetComponent<SpriteRenderer>().color = foodColor[colorIndex];
+    //    else
+    //        GetComponent<SpriteRenderer>().color = foodColor[Cmd_GetColorIndex()];
+    //}
 }

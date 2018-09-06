@@ -7,7 +7,9 @@ public class PlayerController:NetworkBehaviour
 {
 
     public float speed = 10, carmareSpeed = 10;
-    float radius, area;
+    [SyncVar(hook = "_ChangeSize")]
+    float radius;
+    float area;
     Rigidbody2D rb2d;
     Vector3 offset;
 
@@ -29,18 +31,22 @@ public class PlayerController:NetworkBehaviour
             return;
         Vector3 pos = transform.position + offset;
         Camera.main.gameObject.transform.position = Vector3.Lerp(Camera.main.gameObject.transform.position, pos, carmareSpeed * Time.deltaTime);
-
     }
+
+    private void Start()
+    {
+        radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
+        area = Mathf.PI * radius * radius;
+    }
+
 
     public override void OnStartLocalPlayer()
     {
         // 本地玩家初始化
         offset = Camera.main.gameObject.transform.position - transform.position;
         rb2d = GetComponent<Rigidbody2D>();
-
-        radius = GetComponent<CircleCollider2D>().radius;
-        area = Mathf.PI * radius * radius;
         float boundaryX, boundaryY;
+        radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
         boundaryX = GlobalVar.Instance.MapX / 2.0f - radius;
         boundaryY = GlobalVar.Instance.MapY / 2.0f - radius;
         float x = Random.Range(-boundaryX, boundaryX);
@@ -49,20 +55,39 @@ public class PlayerController:NetworkBehaviour
         //transform.localPosition = new Vector3(boundaryX, -boundaryY, transform.localPosition.z);
     }
 
-    void _Becomebigger(float r)
+    /// <summary>
+    /// 服务端判断碰撞，变大
+    /// </summary>
+    /// <param name="addR">吃掉半径为addR的球体</param>
+    void _Becomebigger(float addR)
     {
-        float newArea = Mathf.PI * r * r;
-        float multiple = newArea / area;
-        //Debug.Log(string.Format("area:{0} newarea:{1} multiple:{2} localscale:{3}", area, newArea, multiple, transform.localScale));
+        if(!isServer)
+            return;
+        area += Mathf.PI * addR * addR;
+        float newradius = Mathf.Sqrt(area / Mathf.PI);
+        float multiple = (newradius - radius) / radius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
-        area += newArea;
-        radius = Mathf.Sqrt(area / Mathf.PI);
-        NetworkServer.Spawn(this.gameObject);
+        radius = newradius;
+    }
+
+    /// <summary>
+    /// 服务端改变radius之后 同步到其他客户端
+    /// </summary>
+    /// <param name="r">将半径变为r</param>
+    void _ChangeSize(float r)
+    {
+        if(isServer)
+            return;
+        Debug.Log(string.Format("oldRadius:{0} newRadius{1}", radius, r));
+        float multiple = (r - radius) / radius;
+        transform.localScale += new Vector3(multiple, multiple, multiple);
+        area = Mathf.PI * r * r;
+        radius = r;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!isLocalPlayer)
+        if(!isServer)
             return;
         if(collision.CompareTag("Food"))
         {
@@ -72,7 +97,6 @@ public class PlayerController:NetworkBehaviour
         }
     }
 
-    [Command]
     public void Cmd_EatFood(GameObject food)
     {
         if(!isServer)
