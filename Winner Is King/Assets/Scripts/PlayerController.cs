@@ -23,6 +23,8 @@ public class PlayerController:NetworkBehaviour
         }
     }
 
+
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -30,8 +32,17 @@ public class PlayerController:NetworkBehaviour
             return;
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
-        Vector3 pos = new Vector3(h, v, 0);
-        transform.position += pos * Speed * Time.deltaTime;
+        float x = h * Speed * Time.deltaTime + transform.position.x;
+        float y = v * Speed * Time.deltaTime + transform.position.y;
+        if(x > GlobalVar.Instance.MapX / 2 - radius)
+            x = GlobalVar.Instance.MapX / 2 - radius;
+        if(x < radius - GlobalVar.Instance.MapX / 2)
+            x = radius - GlobalVar.Instance.MapX / 2;
+        if(y > GlobalVar.Instance.MapY / 2 - radius)
+            y = GlobalVar.Instance.MapY / 2 - radius;
+        if(y < radius - GlobalVar.Instance.MapY / 2)
+            y = radius - GlobalVar.Instance.MapY / 2;
+        transform.position = new Vector3(x, y, 0);
     }
 
     private void LateUpdate()
@@ -76,7 +87,10 @@ public class PlayerController:NetworkBehaviour
         float newradius = Mathf.Sqrt(area / Mathf.PI);
         float multiple = (newradius - radius) / radius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
-        radius = newradius;
+
+        // 纠正半径误差
+        radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
+        area = Mathf.PI * radius * radius;
     }
 
     /// <summary>
@@ -87,7 +101,6 @@ public class PlayerController:NetworkBehaviour
     {
         if(isServer)
             return;
-        Debug.Log(string.Format("oldRadius:{0} newRadius{1}", radius, r));
         float multiple = (r - radius) / radius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
         area = Mathf.PI * r * r;

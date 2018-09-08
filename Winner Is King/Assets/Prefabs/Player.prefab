@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ed9615a953487c4caeb2c43c83d34c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 50
+  initialSpeed: 80
   carmareSpeed: 10
 --- !u!114 &114393887105209412
 MonoBehaviour:
