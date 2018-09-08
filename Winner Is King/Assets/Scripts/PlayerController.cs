@@ -92,22 +92,15 @@ public class PlayerController:NetworkBehaviour
         if(collision.CompareTag("Food"))
         {
             float r = collision.gameObject.GetComponent<FoodController>().Radius;
-            Cmd_EatFood(collision.gameObject);
+            GameObject oServerController = GameObject.Find("ServerController");
+            oServerController.GetComponent<GenerateFoodManager>().CmdEatFood(collision.gameObject);
             _Becomebigger(r);
         }
     }
 
-    public void Cmd_EatFood(GameObject food)
-    {
-        if(!isServer)
-            return;
-        GameObject oServerController = GameObject.Find("ServerController");
-        oServerController.GetComponent<GenerateFoodManager>().CmdEatFood(food);
-    }
-
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(!isLocalPlayer)
+        if(!isServer)
             return;
         if(collision.CompareTag("Player"))
         {
@@ -117,10 +110,18 @@ public class PlayerController:NetworkBehaviour
             if(dis <= radius) // 如果和别人的距离小于等于自己的半径，吃掉别人
             {
                 float r = otherPlayer.GetComponent<PlayerController>().radius;
-                Cmd_EatFood(otherPlayer);
                 _Becomebigger(r);
+                radius = GetComponent<CircleCollider2D>().radius;
+                otherPlayer.GetComponent<PlayerController>().Rpc_Die();
             }
         }
+    }
+
+    [ClientRpc]
+    public void Rpc_Die()
+    {
+        transform.localScale = new Vector3(1, 1, 1);
+        OnStartLocalPlayer();
     }
 
 }
