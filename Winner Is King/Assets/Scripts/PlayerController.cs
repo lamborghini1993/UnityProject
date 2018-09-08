@@ -6,13 +6,22 @@ using UnityEngine.Networking;
 public class PlayerController:NetworkBehaviour
 {
 
-    public float speed = 10, carmareSpeed = 10;
+    public float initialSpeed = 50;
+    public float carmareSpeed = 10;
     [SyncVar(hook = "_ChangeSize")]
+    private float speed;
     float radius;
     float area;
     Rigidbody2D rb2d;
     Vector3 offset;
 
+    float Speed
+    {
+        get
+        {
+            return initialSpeed - initialSpeed / radius;
+        }
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -21,8 +30,8 @@ public class PlayerController:NetworkBehaviour
             return;
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
-        rb2d.AddForce(new Vector2(h, v) * speed * Time.deltaTime);
-        //transform.Translate(new Vector3(h, v, 0) * speed * Time.deltaTime);
+        Vector3 pos = new Vector3(h, v, 0);
+        transform.position += pos * Speed * Time.deltaTime;
     }
 
     private void LateUpdate()
