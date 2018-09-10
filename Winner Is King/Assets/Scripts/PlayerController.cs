@@ -8,10 +8,10 @@ public class PlayerController:NetworkBehaviour
 
     public float initialSpeed = 50;
     public float carmareSpeed = 10;
-    [SyncVar(hook = "_ChangeSize")]
 
-    private float speed;
+    [SyncVar(hook = "_ChangeSize")]
     float radius;
+    private float speed;
     float area;
     Rigidbody2D rb2d;
     Vector3 offset;
@@ -132,6 +132,7 @@ public class PlayerController:NetworkBehaviour
     {
         if(isServer)
             return;
+        Debug.Log("_ChangeSize");
         float multiple = (r - radius) / radius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
         area = Mathf.PI * r * r;
