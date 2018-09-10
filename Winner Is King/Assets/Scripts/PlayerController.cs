@@ -9,11 +9,13 @@ public class PlayerController:NetworkBehaviour
     public float initialSpeed = 50;
     public float carmareSpeed = 10;
     [SyncVar(hook = "_ChangeSize")]
+
     private float speed;
     float radius;
     float area;
     Rigidbody2D rb2d;
     Vector3 offset;
+    private float mapX, mapY;
 
     float Speed
     {
@@ -34,15 +36,32 @@ public class PlayerController:NetworkBehaviour
         float h = Input.GetAxis("Horizontal");
         float x = h * Speed * Time.deltaTime + transform.position.x;
         float y = v * Speed * Time.deltaTime + transform.position.y;
-        if(x > GlobalVar.Instance.MapX / 2 - radius)
-            x = GlobalVar.Instance.MapX / 2 - radius;
-        if(x < radius - GlobalVar.Instance.MapX / 2)
-            x = radius - GlobalVar.Instance.MapX / 2;
-        if(y > GlobalVar.Instance.MapY / 2 - radius)
-            y = GlobalVar.Instance.MapY / 2 - radius;
-        if(y < radius - GlobalVar.Instance.MapY / 2)
-            y = radius - GlobalVar.Instance.MapY / 2;
+        if(x > mapX / 2 - radius)
+            x = mapX / 2 - radius;
+        if(x < radius - mapX / 2)
+            x = radius - mapX / 2;
+        if(y > mapY / 2 - radius)
+            y = mapY / 2 - radius;
+        if(y < radius - mapY / 2)
+            y = radius - mapY / 2;
         transform.position = new Vector3(x, y, 0);
+    }
+
+    [Command]
+    void Cmd_GetMapBoundary()
+    {
+        if(!isServer)
+            return;
+        Rpc_SetMapBoundary(GlobalVar.Instance.MapX, GlobalVar.Instance.MapY);
+    }
+
+    [ClientRpc]
+    void Rpc_SetMapBoundary(float x, float y)
+    {
+        if(!isLocalPlayer)
+            return;
+        mapX = x;
+        mapY = y;
     }
 
     private void LateUpdate()
@@ -57,6 +76,7 @@ public class PlayerController:NetworkBehaviour
     {
         radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
         area = Mathf.PI * radius * radius;
+        Cmd_GetMapBoundary();
     }
 
 
@@ -86,11 +106,22 @@ public class PlayerController:NetworkBehaviour
         area += Mathf.PI * addR * addR;
         float newradius = Mathf.Sqrt(area / Mathf.PI);
         float multiple = (newradius - radius) / radius;
+        float oldRadius = radius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
 
         // 纠正半径误差
         radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
         area = Mathf.PI * radius * radius;
+        Rpc_ChangeCameraSize(Camera.main.orthographicSize * radius / oldRadius);
+    }
+
+    [ClientRpc]
+    void Rpc_ChangeCameraSize(float size)
+    {
+        if(isLocalPlayer)
+        {
+            Camera.main.orthographicSize = size;
+        }
     }
 
     /// <summary>
