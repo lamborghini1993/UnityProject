@@ -13,7 +13,6 @@ public class PlayerController:NetworkBehaviour
     float radius;
     private float speed;
     float area;
-    Rigidbody2D rb2d;
     Vector3 offset;
     private float mapX, mapY;
 
@@ -84,7 +83,6 @@ public class PlayerController:NetworkBehaviour
     {
         // 本地玩家初始化
         offset = Camera.main.gameObject.transform.position - transform.position;
-        rb2d = GetComponent<Rigidbody2D>();
         float boundaryX, boundaryY;
         radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
         boundaryX = GlobalVar.Instance.MapX / 2.0f - radius;
@@ -132,7 +130,6 @@ public class PlayerController:NetworkBehaviour
     {
         if(isServer)
             return;
-        Debug.Log("_ChangeSize");
         float multiple = (r - radius) / radius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
         area = Mathf.PI * r * r;
