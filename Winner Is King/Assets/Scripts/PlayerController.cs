@@ -76,7 +76,7 @@ public class PlayerController:NetworkBehaviour
         mapY = y;
         boundaryX = x / 2.0f - InitialRadius;
         boundaryY = y / 2.0f - InitialRadius;
-        Init();
+        Init(); // 获取到边界再初始化生成位置
     }
 
     private void LateUpdate()
@@ -88,7 +88,7 @@ public class PlayerController:NetworkBehaviour
         Camera.main.gameObject.transform.position = Vector3.Lerp(Camera.main.gameObject.transform.position, pos, carmareSpeed * Time.deltaTime);
     }
 
-    public void Start()
+    public void Start() // romoteplayer调用初始化
     {
         Init();
     }
@@ -100,13 +100,13 @@ public class PlayerController:NetworkBehaviour
         transform.localScale = new Vector3(1, 1, 1);
         if(isLocalPlayer)
         {
+            // local才初始化位置
             float x = Random.Range(-boundaryX, boundaryX);
             float y = Random.Range(-boundaryY, boundaryY);
-            Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, x, y));
+            //Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, x, y));
             transform.localPosition = new Vector3(x, y, transform.localPosition.z);
         }
     }
-
 
     public override void OnStartLocalPlayer()
     {
@@ -114,16 +114,6 @@ public class PlayerController:NetworkBehaviour
         // 本地玩家初始化
         Cmd_GetMapBoundary();
         cameraSize = Camera.main.orthographicSize;
-        //radius = InitialRadius * transform.localScale.x;
-        //boundaryX = GlobalVar.Instance.MapX / 2.0f - radius;
-        //boundaryY = GlobalVar.Instance.MapY / 2.0f - radius;
-        //Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, 0, 0));
-        //Init();
-        //float x = Random.Range(-boundaryX, boundaryX);
-        //float y = Random.Range(-boundaryY, boundaryY);
-        ////Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, x, y));
-        //transform.localPosition = new Vector3(x, y, transform.localPosition.z);
-        ////transform.localPosition = new Vector3(boundaryX, -boundaryY, transform.localPosition.z);
     }
 
     /// <summary>
@@ -140,7 +130,6 @@ public class PlayerController:NetworkBehaviour
         float multiple = (radius - oldRadius) / InitialRadius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
         Debug.Log(string.Format("Old:{0} Eat:{1} now:{2}", oldRadius, addR, radius));
-        //Rpc_ChangeCameraSize(Camera.main.orthographicSize * radius / oldRadius);
     }
 
 
@@ -150,15 +139,16 @@ public class PlayerController:NetworkBehaviour
     /// <param name="r">将半径变为r</param>
     void _ChangeSize(float r)
     {
-        if(isServer)
+        if(isServer && !isLocalPlayer)
             return;
-        Debug.Log(string.Format("old:{0} new:{1}", radius, r));
+        //Debug.Log(string.Format("old:{0} new:{1}", radius, r));
         float multiple = (r - radius) / InitialRadius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
         area = Mathf.PI * r * r;
         radius = r;
         if(isLocalPlayer)
         {
+            // local改变相机size
             float size = radius * cameraSize / InitialRadius;
             Camera.main.orthographicSize = size;
         }
@@ -201,19 +191,5 @@ public class PlayerController:NetworkBehaviour
         if(!isLocalPlayer)
             return;
         Init();
-        //Destroy(this.gameObject);
-        //Network.Disconnect();
-        //OnPlayerDisconnected(this.gameObject as NetworkPlayer);
-        //OnPlayerDisconnected();
-        //radius = InitialRadius;
-        //transform.localScale = new Vector3(1, 1, 1);
-        //OnStartLocalPlayer();
     }
-
-    private void OnPlayerDisconnected(NetworkPlayer player)
-    {
-        Network.RemoveRPCs(player);
-        Network.DestroyPlayerObjects(player);
-    }
-
 }
