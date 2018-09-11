@@ -14,7 +14,9 @@ public class PlayerController:NetworkBehaviour
     private float speed;
     float area;
     Vector3 offset;
-    private float mapX, mapY;
+    float mapX = 0, mapY = 0;
+    float boundaryX, boundaryY;
+    float cameraSize;
 
     float Speed
     {
@@ -24,7 +26,13 @@ public class PlayerController:NetworkBehaviour
         }
     }
 
-
+    float InitialRadius
+    {
+        get
+        {
+            return GetComponent<CircleCollider2D>().radius;
+        }
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -33,6 +41,10 @@ public class PlayerController:NetworkBehaviour
             return;
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
+        if(v == 0 && h == 0)
+            return;
+        if(mapX == 0 && mapY == 0)
+            return;
         float x = h * Speed * Time.deltaTime + transform.position.x;
         float y = v * Speed * Time.deltaTime + transform.position.y;
         if(x > mapX / 2 - radius)
@@ -59,38 +71,59 @@ public class PlayerController:NetworkBehaviour
     {
         if(!isLocalPlayer)
             return;
+        //Debug.Log("Rpc_SetMapBoundary");
         mapX = x;
         mapY = y;
+        boundaryX = x / 2.0f - InitialRadius;
+        boundaryY = y / 2.0f - InitialRadius;
+        Init();
     }
 
     private void LateUpdate()
     {
         if(!isLocalPlayer)
             return;
-        Vector3 pos = transform.position + offset;
+        Vector3 pos = transform.position;
+        pos.z = Camera.main.gameObject.transform.position.z;
         Camera.main.gameObject.transform.position = Vector3.Lerp(Camera.main.gameObject.transform.position, pos, carmareSpeed * Time.deltaTime);
     }
 
-    private void Start()
+    public void Start()
     {
-        radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
+        Init();
+    }
+
+    private void Init()
+    {
+        radius = InitialRadius;
         area = Mathf.PI * radius * radius;
-        Cmd_GetMapBoundary();
+        transform.localScale = new Vector3(1, 1, 1);
+        if(isLocalPlayer)
+        {
+            float x = Random.Range(-boundaryX, boundaryX);
+            float y = Random.Range(-boundaryY, boundaryY);
+            Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, x, y));
+            transform.localPosition = new Vector3(x, y, transform.localPosition.z);
+        }
     }
 
 
     public override void OnStartLocalPlayer()
     {
+        //Debug.Log("OnStartLocalPlayer");
         // 本地玩家初始化
-        offset = Camera.main.gameObject.transform.position - transform.position;
-        float boundaryX, boundaryY;
-        radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
-        boundaryX = GlobalVar.Instance.MapX / 2.0f - radius;
-        boundaryY = GlobalVar.Instance.MapY / 2.0f - radius;
-        float x = Random.Range(-boundaryX, boundaryX);
-        float y = Random.Range(-boundaryY, boundaryY);
-        transform.localPosition = new Vector3(x, y, transform.localPosition.z);
-        //transform.localPosition = new Vector3(boundaryX, -boundaryY, transform.localPosition.z);
+        Cmd_GetMapBoundary();
+        cameraSize = Camera.main.orthographicSize;
+        //radius = InitialRadius * transform.localScale.x;
+        //boundaryX = GlobalVar.Instance.MapX / 2.0f - radius;
+        //boundaryY = GlobalVar.Instance.MapY / 2.0f - radius;
+        //Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, 0, 0));
+        //Init();
+        //float x = Random.Range(-boundaryX, boundaryX);
+        //float y = Random.Range(-boundaryY, boundaryY);
+        ////Debug.Log(string.Format("Boundary x:{0} y:{1} Random x:{2} y:{3}", boundaryX, boundaryY, x, y));
+        //transform.localPosition = new Vector3(x, y, transform.localPosition.z);
+        ////transform.localPosition = new Vector3(boundaryX, -boundaryY, transform.localPosition.z);
     }
 
     /// <summary>
@@ -102,25 +135,14 @@ public class PlayerController:NetworkBehaviour
         if(!isServer)
             return;
         area += Mathf.PI * addR * addR;
-        float newradius = Mathf.Sqrt(area / Mathf.PI);
-        float multiple = (newradius - radius) / radius;
         float oldRadius = radius;
+        radius = Mathf.Sqrt(area / Mathf.PI);
+        float multiple = (radius - oldRadius) / InitialRadius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
-
-        // 纠正半径误差
-        radius = GetComponent<CircleCollider2D>().radius * transform.localScale.x;
-        area = Mathf.PI * radius * radius;
-        Rpc_ChangeCameraSize(Camera.main.orthographicSize * radius / oldRadius);
+        Debug.Log(string.Format("Old:{0} Eat:{1} now:{2}", oldRadius, addR, radius));
+        //Rpc_ChangeCameraSize(Camera.main.orthographicSize * radius / oldRadius);
     }
 
-    [ClientRpc]
-    void Rpc_ChangeCameraSize(float size)
-    {
-        if(isLocalPlayer)
-        {
-            Camera.main.orthographicSize = size;
-        }
-    }
 
     /// <summary>
     /// 服务端改变radius之后 同步到其他客户端
@@ -130,10 +152,16 @@ public class PlayerController:NetworkBehaviour
     {
         if(isServer)
             return;
-        float multiple = (r - radius) / radius;
+        Debug.Log(string.Format("old:{0} new:{1}", radius, r));
+        float multiple = (r - radius) / InitialRadius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
         area = Mathf.PI * r * r;
         radius = r;
+        if(isLocalPlayer)
+        {
+            float size = radius * cameraSize / InitialRadius;
+            Camera.main.orthographicSize = size;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -155,14 +183,13 @@ public class PlayerController:NetworkBehaviour
             return;
         if(collision.CompareTag("Player"))
         {
-            Debug.Log("OnTriggerStay2D");
             GameObject otherPlayer = collision.gameObject;
             float dis = Vector3.Distance(transform.position, otherPlayer.transform.position);
             if(dis <= radius) // 如果和别人的距离小于等于自己的半径，吃掉别人
             {
                 float r = otherPlayer.GetComponent<PlayerController>().radius;
                 _Becomebigger(r);
-                radius = GetComponent<CircleCollider2D>().radius;
+                otherPlayer.GetComponent<PlayerController>().Init();
                 otherPlayer.GetComponent<PlayerController>().Rpc_Die();
             }
         }
@@ -171,8 +198,22 @@ public class PlayerController:NetworkBehaviour
     [ClientRpc]
     public void Rpc_Die()
     {
-        transform.localScale = new Vector3(1, 1, 1);
-        OnStartLocalPlayer();
+        if(!isLocalPlayer)
+            return;
+        Init();
+        //Destroy(this.gameObject);
+        //Network.Disconnect();
+        //OnPlayerDisconnected(this.gameObject as NetworkPlayer);
+        //OnPlayerDisconnected();
+        //radius = InitialRadius;
+        //transform.localScale = new Vector3(1, 1, 1);
+        //OnStartLocalPlayer();
+    }
+
+    private void OnPlayerDisconnected(NetworkPlayer player)
+    {
+        Network.RemoveRPCs(player);
+        Network.DestroyPlayerObjects(player);
     }
 
 }
