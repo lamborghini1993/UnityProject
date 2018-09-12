@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   food: {fileID: 1081290128180140, guid: e2a8a3f5cd96fe04684941db39188d6e, type: 2}
   background: {fileID: 1702928174}
-  maxFood: 500
+  maxFood: 200
 --- !u!114 &41239797
 MonoBehaviour:
   m_ObjectHideFlags: 0

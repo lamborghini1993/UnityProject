@@ -10,7 +10,7 @@ public class PlayerController:NetworkBehaviour
     public float carmareSpeed = 10;
 
     [SyncVar(hook = "_ChangeSize")]
-    float radius;
+    float radius = 0;
     private float speed;
     float area;
     Vector3 offset;
@@ -114,6 +114,7 @@ public class PlayerController:NetworkBehaviour
         // 本地玩家初始化
         Cmd_GetMapBoundary();
         cameraSize = Camera.main.orthographicSize;
+        radius = InitialRadius;
     }
 
     /// <summary>
@@ -126,10 +127,11 @@ public class PlayerController:NetworkBehaviour
             return;
         area += Mathf.PI * addR * addR;
         float oldRadius = radius;
-        radius = Mathf.Sqrt(area / Mathf.PI);
-        float multiple = (radius - oldRadius) / InitialRadius;
+        float newRadius = Mathf.Sqrt(area / Mathf.PI);
+        float multiple = (newRadius - oldRadius) / InitialRadius;
         transform.localScale += new Vector3(multiple, multiple, multiple);
-        Debug.Log(string.Format("Old:{0} Eat:{1} now:{2}", oldRadius, addR, radius));
+        radius = newRadius;
+        //Debug.Log(string.Format("_Becomebigger Old:{0} Eat:{1} now:{2} rg:{3}", oldRadius, addR, newRadius, InitialRadius * transform.localScale.x));
     }
 
 
@@ -139,13 +141,17 @@ public class PlayerController:NetworkBehaviour
     /// <param name="r">将半径变为r</param>
     void _ChangeSize(float r)
     {
-        if(isServer && !isLocalPlayer)
-            return;
-        //Debug.Log(string.Format("old:{0} new:{1}", radius, r));
-        float multiple = (r - radius) / InitialRadius;
-        transform.localScale += new Vector3(multiple, multiple, multiple);
-        area = Mathf.PI * r * r;
-        radius = r;
+        if(radius == 0)
+            radius = InitialRadius;
+        if(!isServer)
+        {
+            //Debug.Log(string.Format("old:{0} new:{1}", radius, r));
+            float multiple = (r - radius) / InitialRadius;
+            transform.localScale += new Vector3(multiple, multiple, multiple);
+            area = Mathf.PI * r * r;
+            //Debug.Log(string.Format("_ChangeSize old:{0} new:{1} rg:{2}", radius, r, InitialRadius * transform.localScale.x));
+            radius = r;
+        }
         if(isLocalPlayer)
         {
             // local改变相机size
