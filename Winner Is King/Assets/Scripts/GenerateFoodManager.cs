@@ -43,7 +43,7 @@ public class GenerateFoodManager:NetworkBehaviour
         while(curFood < maxFood)
         {
             GameObject go = GameObject.Instantiate(food, _RandomCoord(), Quaternion.identity);
-            NetworkServer.Spawn(go);
+            NetworkServer.Spawn(go);    // 将该对象使用Network Manager同步到其他端
             curFood += 1;
         }
     }
